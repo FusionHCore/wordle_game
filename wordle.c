@@ -5,6 +5,8 @@
 #define max_length 20
 #define cupr(c) ((c)>='a' && (c)<='z'? (c)-32: (c)) //macro to capitalize a character
 
+// Yo! i am just checking ight if pull request actually works!!!
+
 void print_progress(char s[max_length+1],int pos[max_length], int wordlen); //max_length+1 for s to give space for \0
 
 struct word_data
