@@ -16,7 +16,7 @@ struct word_data
 int main()
 {
 	struct word_data w[max_words];
-	int i=0,j,correct=0,temp1_counter=0,pos[max_length],underscores[max_length];//underscores for printing underscores only
+	int i=0,j,correct=0,temp1_counter=0,pos[max_length],underscores[max_length],input_len;//underscores for printing underscores only
 	char user_input[max_length],s[max_length];
 	FILE *fp;
 	fp = fopen("words.txt","r"); //File should only contain capitalized words
@@ -42,17 +42,37 @@ int main()
 	{
 		printf("Enter word %d:\n",i+1);
 		print_progress("0",underscores,w[i].word_length);
-		while(correct!=1)
+		while(!correct)
 		{
 			temp1_counter=0;
-			scanf("%19s",user_input);
-			if(strcmp(w[i].word,strupr(user_input))==0)
+			for(j=0;j<max_length;j++)//prevents leftover data if the user inputs less characters than max_length
+			{
+				pos[j]=-1;
+				s[j]='\0';
+			}
+			do
+			{
+				scanf("%19s",user_input); //19 for buffer safety
+				if(strlen(user_input)>w[i].word_length)
+				{
+					printf("Input larger than the specified word!!\n");
+				}
+			}while(strlen(user_input)>w[i].word_length);
+			
+			input_len = strlen(user_input);
+			
+			for(j=0;j<input_len;j++)
+			{
+				user_input[j]=cupr(user_input[j]);
+			}
+			
+			if(strcmp(w[i].word,user_input)==0)
 			{
 				correct = 1;
 				continue;
 			}
 			//compile the chars and its position into in 2 arrays
-			for(j=0;j<w[i].word_length;j++)
+			for(j=0;j<w[i].word_length && j<input_len;j++)
 			{
 				if(w[i].word[j]==cupr(user_input[j]))
 				{
@@ -64,11 +84,15 @@ int main()
 			s[temp1_counter]='\0';   //needed for manual string creation
 			print_progress(s,pos,w[i].word_length);  //send the two arrays to print_progress
 		}
-		if(i=max_words-2)
+		if(i == max_words-2)
 		    printf("\nYou got the word correct!!\nLast one:");
+		else if(i == max_words-1)
+		{
+			printf("The game has ended. Thanks for playing!!");
+		}
 		else
 			printf("\nYou got the word correct!!\nNext one:");
-		correct=0;
+		correct=0;	
 	}
 }
 
